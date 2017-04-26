@@ -1,7 +1,7 @@
 %%      TP 1
 %Ingreso y procesamiento inicial de datos
 load('datosTP1-2017.mat')
-datosInp = datos5; %Ingresar datos de entradas. 1 columna var indep.
+datosInp = datos1; %Ingresar datos de entradas. 1 columna var indep.
 %DatosInpLog = [datosInp(:,1) log(datosInp(:,2))];
 %n = size(datosInp,1);
 
