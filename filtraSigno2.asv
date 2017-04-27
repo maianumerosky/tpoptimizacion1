@@ -8,12 +8,12 @@ n = size(x,1);
 [maximo arg] = max(abs(x(:,2))); 
 % "maximo" es el valor de mayor modulo, "arg" es el indice.
 
-if  x(arg,2)> 0 %Si la componente "y" de mayor modulo es positivo
-    y = x(x(:,2)>0,:); %Entonces quedarse solo con los datos positivos
+if  x(arg,2)> 0 %Si el elemento
+    y = x(x(:,2)>0,:);
     signo = 1;
 else
-    y = abs(x(x(:,2)<0,:)); %Sino quedarse solo con los datos negativos
-    signo = -1; 
+    y = abs(x(x(:,2)<0,:));
+    signo = -1;
 end
 
 % Nota x(x(:,2)>0,:) Significa que me quedo con las filas que en las

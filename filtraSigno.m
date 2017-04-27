@@ -1,7 +1,7 @@
 function [y signo] = filtraSigno(x)
-% Esta función se fija el signo de la mayorìa de los elementos de un
+% Esta funcion se fija el signo de la mayoria de los elementos de un
 % arreglo de nx2 y elimina los que tienen el signo contrario o cero. Para
-% los negativos, les aplica módulo
+% los negativos, les aplica modulo
 
 n = size(x,1);
 i = 0;
@@ -11,7 +11,7 @@ for k = 1:n
     end
 end
 
-% i me dice cuántos negativos hay
+% i me dice cuantos negativos hay
 if i <= n/2
     y = x(x(:,2)>0,:);
     signo = 1;
