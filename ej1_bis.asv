@@ -1,7 +1,7 @@
 clear all, close all
 %% Cargo datos
 load('datosTP1-2017.mat')
-datosInp = datos4;
+datosInp = datos1;
 main
 %x = filtrados(:,1);
 %y = filtrados(:,2);
@@ -17,7 +17,7 @@ d = @(tita) y-tita(2).*tita(1).^x;
 tita0 = [a k];
 tita = tita0;
 iterador = 0;
-err1 = sum(d(tita).^2);
+err1 = d(tita);
 err = err1+1; %artilugio para entrar al ciclo
 
 while iterador<1000 && norm(err-err1)>0.001
@@ -28,7 +28,7 @@ while iterador<1000 && norm(err-err1)>0.001
     h = (r\qy)';
     tita = tita + h;
     iterador = iterador + 1;
-    err1 = sum(d(tita).^2);
+    err1 = d(tita);
 end
 
 hold all

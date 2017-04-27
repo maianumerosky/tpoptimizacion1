@@ -37,9 +37,6 @@ k = exp(logSol(2))*signo;
 % Si los datos eliminados fueron los positivos, entonces k es negativo,
 % sino es positivo.
 
-%% Calculo error
-er = sum((Y - k*a.^X).^2);
-
 
 %% %% Utilizando Gauss-Newton para f(x) = k*a^x
 %% Esta es la funcion que mide el error
@@ -72,9 +69,9 @@ tita0 = [log(a), k, 0];
 tita = tita0;
 iterador = 0;
 errr1 = sum(d(tita).^2);
-errr = errr1+1; %artilugio para entrar al ciclo
+errr = errr1+10; %artilugio para entrar al ciclo
 
-while iterador<1000 && norm(errr-errr1)>0.001
+while iterador<100 && norm(errr-errr1)>0.001
     errr = err1;
     J = [-X*tita(2).*exp(tita(1)*X), -exp(tita(1)*X), -1*ones(length(X),1)];
     [q r] = qr(J);
@@ -92,12 +89,12 @@ plot(X,Y,'.')
 x1 = min(X):0.002:max(X);
 y1 = k.*a.^x1;
 % Estas dos ultimas sirven para graficar la funcion estimada por sobre los
-% datos de base
+% daots de base
 plot(x1,y1)
 y1bis = tita(2).*tita(1).^x1;
 plot(x1,y1bis)
 y2 = tita(2).*exp(tita(1).*x1)+tita(3);
 plot(x1,y2)
 legend('Datos', 'Regresión exponencial por linealizacion', 'Regresion exponencial Gauss-Newton','Regresion exponencial generalizada')
-title('Datos 2')
-text(.5,.1,{['Error = ',num2str(er)],['Error = ',num2str(err1)],['Error = ',num2str(errr1)]},'Units','normalized')
+title('Datos 1')
+text(.5,.1,['Error = ',num2str(err1);'Error = ',num2str(errr1)],'Units','normalized')
