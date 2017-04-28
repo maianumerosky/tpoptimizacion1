@@ -2,8 +2,8 @@
 clear all, close all
 
 %Ingreso y procesamiento inicial de datos
-load('datosHospital.mat')
-datosInp = M; %Ingresar datos de entrada. Primer columna variable independiente.
+load('datosTP1-2017.mat')
+datosInp = datos1; %Ingresar datos de entrada. Primer columna variable independiente.
 X = datosInp(:,1);
 Y = datosInp(:,2);
 
@@ -46,12 +46,12 @@ k = exp(logSol(2))*signo;
 er = sum((Y - k*a.^X).^2); %Miro la suma de los cuadrados de las desviaciones.
 
 
-%% %% Ejercicio 1bis: Utilizando Gauss-Newton para f(x) = k*a^x 
+%% %% Ejercicio 1bis: Utilizando Gauss-Newton para f(x) = k*e^bx 
 %% Esta es la funcion que mide el error
-d = @(tita) Y-tita(2).*tita(1).^X;
+d = @(tita) Y-tita(2).*exp(tita(1).*X);
 
 %% Gauss - Newton
-tita0_ej1b = [a k]; %Comienzo con los valores iniciales arrojados por la estimacion anterior
+tita0_ej1b = [log(a) k]; %Comienzo con los valores iniciales arrojados por la estimacion anterior
 tita_ej1b = tita0_ej1b;
 iterador = 0;
 err1 = sum(d(tita_ej1b).^2); %Yo quiero minimizar la suma de los cuadrados de las desviaciones
@@ -60,7 +60,7 @@ err = err1+1; %artilugio para entrar al ciclo
 while iterador<1000 && norm(err-err1)>0.001 %Notar que el ciclo termina porque hay una cantidad maxima de iteraciones
     % Gauss-Newton propiamente dicho
     err = err1;
-    J = [-tita_ej1b(2)*log(tita_ej1b(1))*tita_ej1b(1).^X, -tita_ej1b(1).^X]; %tita = [a,k]
+    J = [-tita_ej1b(2).*X.*exp(tita_ej1b(1).*X), -exp(tita_ej1b(1).*X)]; %tita = [a,k]
     % Matriz jacobiana cuya expresion resulta del calculo analitico.
     [q r] = qr(J);
     qy = q'*(-d(tita_ej1b));
@@ -69,6 +69,7 @@ while iterador<1000 && norm(err-err1)>0.001 %Notar que el ciclo termina porque h
     iterador = iterador + 1;
     err1 = sum(d(tita_ej1b).^2);
 end
+
 
 %% %% Ejercicio 2
 d = @(tita) Y-tita(2).*exp(tita(1).*X)-tita(3);
@@ -104,7 +105,8 @@ x1 = min(X):0.002:max(X);
 y1 = k.*a.^x1; %Estimacion ejercicio 1
 plot(x1,y1,'Linewidth',3)
 %y1bis = tita_ej1b(2).*tita_ej1b(1).^x1; %Estimacion ejercicio 1 bis
-%plot(x1,y1bis,'Linewidth',3)
+y1bis = tita_ej1b(2).*exp(tita_ej1b(1).*x1);
+plot(x1,y1bis,'Linewidth',3)
 y2 = tita_ej2(2).*exp(tita_ej2(1).*x1)+tita_ej2(3); %Estimacion ejercicio 2
 plot(x1,y2,'Linewidth',3)
 legend('Datos', 'Regresión exponencial por linealizacion', 'Regresion exponencial Gauss-Newton','Regresion exponencial generalizada')
