@@ -3,7 +3,8 @@ clear all, close all
 
 %Ingreso y procesamiento inicial de datos
 load('datosTP1-2017.mat')
-datosInp = datos1; %Ingresar datos de entrada. Primer columna variable independiente.
+load('datosHospital.mat')
+datosInp = M; %Ingresar datos de entrada. Primer columna variable independiente.
 X = datosInp(:,1);
 Y = datosInp(:,2);
 
@@ -45,8 +46,10 @@ k = exp(logSol(2))*signo;
 %% Calculo error
 er = sum((Y - k*a.^X).^2); %Miro la suma de los cuadrados de las desviaciones.
 
-
 %% %% Ejercicio 1bis: Utilizando Gauss-Newton para f(x) = k*e^bx 
+% Notar que con b = log(a) este problema se reduce al caso anterior
+% permitiendo su comparacion.
+
 %% Esta es la funcion que mide el error
 d = @(tita) Y-tita(2).*exp(tita(1).*X);
 
@@ -104,8 +107,7 @@ x1 = min(X):0.002:max(X);
 %estimacion y comparo.
 y1 = k.*a.^x1; %Estimacion ejercicio 1
 plot(x1,y1,'Linewidth',3)
-%y1bis = tita_ej1b(2).*tita_ej1b(1).^x1; %Estimacion ejercicio 1 bis
-y1bis = tita_ej1b(2).*exp(tita_ej1b(1).*x1);
+y1bis = tita_ej1b(2).*exp(tita_ej1b(1).*x1); %Estimacion ejercicio 1 bis
 plot(x1,y1bis,'Linewidth',3)
 y2 = tita_ej2(2).*exp(tita_ej2(1).*x1)+tita_ej2(3); %Estimacion ejercicio 2
 plot(x1,y2,'Linewidth',3)
