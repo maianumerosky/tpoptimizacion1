@@ -2,8 +2,8 @@
 clear all, close all
 
 %Ingreso y procesamiento inicial de datos
-load('datosTP1-2017.mat')
-datosInp = datos2; %Ingresar datos de entrada. Primer columna variable independiente.
+load('datosHospital.mat')
+datosInp = M; %Ingresar datos de entrada. Primer columna variable independiente.
 X = datosInp(:,1);
 Y = datosInp(:,2);
 
@@ -18,7 +18,7 @@ Y = datosInp(:,2);
 %Observar que la funcion filtrados devuelve los datos de la variable
 %dependiente con signo positivo. Todo el problema se resuelve como si
 %fueran valores positivos. Al final, segun el signo asociado a la variable
-%"k" se adecúa a los datos originales.
+%"k" se adecÃºa a los datos originales.
 
 %% Linealizamos
 DatosFiltLog = [filtrados(:,1) log(filtrados(:,2))];
@@ -102,11 +102,17 @@ x1 = min(X):0.002:max(X);
 %variable independiente de los datos crudos. Sobre este vector calculo la
 %estimacion y comparo.
 y1 = k.*a.^x1; %Estimacion ejercicio 1
-plot(x1,y1)
-y1bis = tita_ej1b(2).*tita_ej1b(1).^x1; %Estimacion ejercicio 1 bis
-plot(x1,y1bis)
+plot(x1,y1,'Linewidth',3)
+%y1bis = tita_ej1b(2).*tita_ej1b(1).^x1; %Estimacion ejercicio 1 bis
+%plot(x1,y1bis,'Linewidth',3)
 y2 = tita_ej2(2).*exp(tita_ej2(1).*x1)+tita_ej2(3); %Estimacion ejercicio 2
-plot(x1,y2)
-legend('Datos', 'Regresión exponencial por linealizacion', 'Regresion exponencial Gauss-Newton','Regresion exponencial generalizada')
-title('Datos 2')
-text(.5,.1,{['Error Ej 1= ',num2str(er)],['Error Ej 1bis= ',num2str(err1)],['Error Ej 2= ',num2str(errr1)]},'Units','normalized')
+plot(x1,y2,'Linewidth',3)
+legend('Datos', 'RegresiÃ³n exponencial por linealizacion', 'Regresion exponencial Gauss-Newton','Regresion exponencial generalizada')
+
+if errr1 <= err1 && errr1 <= er
+    text(.5,.1,{['Error Ej 1= ',num2str(er)],['Error Ej 1bis= ',num2str(err1)],['\color{red}','Error Ej 2= ',num2str(errr1)]},'Units','normalized')
+elseif err1 <= errr1 && err1 <= er
+    text(.5,.1,{['Error Ej 1= ',num2str(er)],['\color{red}','Error Ej 1bis= ',num2str(err1)],['Error Ej 2= ',num2str(errr1)]},'Units','normalized')
+elseif er <= err1 && er <= errr1
+    text(.5,.1,{['\color{red}','Error Ej 1= ',num2str(er)],['Error Ej 1bis= ',num2str(err1)],['Error Ej 2= ',num2str(errr1)]},'Units','normalized')
+end
