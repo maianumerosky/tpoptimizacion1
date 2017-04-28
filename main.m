@@ -3,7 +3,6 @@ clear all, close all
 
 %Ingreso y procesamiento inicial de datos
 load('datosTP1-2017.mat')
-load('datosHospital.mat')
 datosInp = M; %Ingresar datos de entrada. Primer columna variable independiente.
 X = datosInp(:,1);
 Y = datosInp(:,2);
