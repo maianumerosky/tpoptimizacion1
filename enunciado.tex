@@ -1,0 +1,154 @@
+\documentclass[12pt]{article}
+\usepackage{graphicx,amsmath,amsfonts,amssymb,epsfig,euscript}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+
+\usepackage{bbold} % Para que escriba bien el vector todo de 1's.
+
+
+
+\usepackage{fancyhdr} % Para modificar los encabezados y pies de página
+%%%%% SUGERENCIA DE HEADER Y FOOT
+%\pagestyle{fancy}
+%\fancyhf{}
+%\rhead{Share\LaTeX}
+%\lhead{Guides and tutorials}
+%\rfoot{Page \thepage}
+%%%%%%%%%%%%%%%%%%%%
+\pagestyle{fancy}
+\lhead{Trabajo Pr\'actico 1 -- Primer Cuatrimestre 2017}
+
+
+\newtheorem{ejer}{Ejercicio}
+\newcommand{\bej}{\begin{ejer}\rm}
+\newcommand{\fej}{\end{ejer}}
+
+
+\def \R{\ensuremath{\mathbb{R}}}
+
+\topmargin-2cm \vsize 29.5cm \hsize 21cm
+\setlength{\textwidth}{16.75cm}\setlength{\textheight}{23.5cm}
+\setlength{\oddsidemargin}{0.0cm}
+\setlength{\evensidemargin}{0.0cm}
+
+\begin{document}
+ \centerline{{\small Universidad de Buenos Aires - Facultad de Ciencias Exactas y Naturales - Depto. de Matemática}}
+ 
+ \vskip 0.2cm
+ \hrulefill
+ \vskip 0.2cm
+
+ \centerline{{\bf\Huge {\sc Optimización}}}
+ \vskip 0.2cm
+ \centerline{\ttfamily Primer Cuatrimestre 2017}
+ \hrulefill
+
+ \bigskip
+ \centerline{\bf Trabajo Práctico N$^\circ$ 1: Ajuste de exponenciales.}
+ 
+ \centerline{\bf Fecha de entrega: Viernes 28 de abril.}
+ \bigskip
+
+ 
+ El objetivo de este trabajo es implementar y comparar algoritmos que ajusten conjuntos de datos con exponenciales, siguiendo diferentes metodologías. 
+ A lo largo de todo el texto, asumiremos que los datos vienen dados por vectores ${\bf x} = (x_1,\dots,x_N)$ e ${\bf y} = (y_1,\dots,y_N)$, de manera tal que los puntos $(x_i,y_i)$ caigan aproximadamente en una exponencial. 
+ 
+\subsection*{Regresión exponencial}
+Una exponencial sencilla puede definirse con la ecuación:
+
+\begin{equation}\label{regexp}
+ y = k.a^x,
+\end{equation}
+con $k \in \R, a > 0, a \neq 1$, aunque el caso $a=1$, al igual que $k = 0$, es simplemente una función constante, lo que llamaremos una \emph{exponencial degenerada}, así admitimos que $a$ y $k$ tomen esos valores. Si todos los datos cayeran sobre una exponencial tendríamos que la ecuación se satisface para todo $(x_i,y_i)$. Asumiendo que esto no sucede (los datos contienen error), buscaremos valores de $a$ y $k$ que minimicen:
+
+$$\sum_i (y_i - ka^{x_i})^2.$$
+O, equivalentemente:
+
+\begin{equation}
+\min_{a,k} \big\|{\bf y} - ka^{\bf x} \big\|, \quad\quad\textrm{donde }\; a^{\bf x} =\big(a^{x_1}, \dots,a^{x_n}\big). 
+\end{equation}
+
+Este enfoque se conoce como \emph{regresión exponencial}. 
+La regresión examina la relación entre dos variables, con el objeto de estudiar las variaciones de una variable cuando la otra permanece constante. En otras palabras, la regresión es un método que se emplea para predecir el valor de una variable en función de valores dados a la otra variable.
+
+Cuando la función que ajusta bien a los datos que se está buscando se puede linealizar en términos de los parámetros se la llama \emph{instrínsecamente lineal}. Que la función sea intrínsecamente lineal no necesariamente implica que su solución de cuadrados mínimos sea apropiada, ya que la transformación para linealizarla también afecta al error que tienen los datos. Por lo tanto, puede suceder que convenga algún método de optimización no lineal en vez de trabajar con la versión linealizada. \cite{Kutner}
+
+
+\bej\label{ejcuadmin} Mostrar que \eqref{regexp} es intrínsecamente lineal y resolver la versión linealizada,
+que es un problema de cuadrados mínimos estándar y escribir la matriz del ajuste. Implementar un algoritmo que reciba como datos dos vectores ${\bf x}$ e ${\bf y}$ y halle la exponencial que ajusta mejor a la versión linealizada. Usar el comando \verb+qr+ de Matlab y los resultados dados en la Práctica 1.\fej 
+
+
+
+
+\subsection*{Exponencial generalizada}
+
+El Ejercicio \ref{ejcuadmin}, al ceñirse a un modelo de cuadrados mínimos clásico, puede resolverse de manera simple y veloz. Sin embargo, al considerar la exponencial:
+
+$$
+y = k.e^{bx} + c,
+$$
+
+la estrategia propuesta en el Ejercicio \ref{ejcuadmin} ya no sirve y se tiene entonces que recurrir a otros métodos. Llamamos
+
+ $$d_i(b,k,c) =  y_i - ke^{bx_i} - c,$$
+
+  El problema de determinar los parámetros $b,k,c$ que mejor ajusten los datos ${\bf x}$, ${\bf y}$ está dado por:
+ \begin{equation}\label{cuadminnl}
+ \min F(b,k,c)
+ \end{equation}
+donde 
+$$ F(b,k,c) = \sum_{i=1}^N d_i^2 = \sum_{i=1}^N\Big(y_i - ke^{bx_i} - c\Big)^2.$$
+
+Es importante observar que este es un problema de cuadrados mínimos \emph{no lineal}, por lo cual no es posible aplicar de manera directa las técnicas habituales de cuadrados mínimos. 
+
+
+
+
+Para resolver \eqref{cuadminnl} utilizaremos el método iterativo de Gauss-Newton, que describimos a continuación.
+El objetivo es minimizar 
+
+$$\sum_{i=1}^N d_i(\theta)^2, \quad \theta = (b,k,c).$$
+
+Notamos ${\bf d}(\theta) = (d_1(\theta),\dots,d_N(\theta))$.
+Idealmente (si los datos coincidieran en una misma exponencial) tendríamos que la solución optima $\theta^*$ satisface ${\bf d}(\theta^*) = {\bf 0}$.
+
+Desarrollando el polinomio de Taylor a orden 1 tenemos que:
+$${\bf d}(\theta+{\bf h}) \simeq {\bf d}(\theta)+J(\theta){\bf h}\sim {\bf 0},$$
+donde $J$ es la matriz diferencial de ${\bf d}$. El método de Gauss-Newton toma una solución inicial $\theta_0$, resuelve el problema de cuadrados mínimos clásico:
+\begin{equation}\label{sistema}
+J(\theta_0){\bf h} = -{\bf d}(\theta_0), 
+\end{equation}
+toma $\theta_1 = \theta_0 + {\bf h}$, e itera el procedimiento, calculando una sucesión $\theta_i$ y deteniéndose cuando se satisface algún criterio de convergencia. 
+
+La elección del valor inicial es muy importante para el método de Gauss--Newton, una mala elección puede resultar en una convergencia lenta, a un minimizador local o incluso diverger. En cambio, una buena elección puede resultar en una convergencia rápida y en caso de existir múltiples minimizadores locales, convergerá a un mínimo global. Si la convergencia es rápida, incluso si la solución inicial está lejos de la solución de cuadrados mínimos, generalmente indica que el modelo de aproximación lineal \eqref{sistema} es una buena aproximación para el modelo no lineal. Una buena solución inicial $\theta_0$ para proponer es la encontrada en el Ejercicio \ref{ejcuadmin}.
+
+% \bej Estudiar, analíticamente, la iteración que daría el método de Newton-Raphson para el problema \eqref{cuadminnl}. Comparar con el método de Gauss-Newton descripto anteriormente. ¿Qué ventajas presenta Gauss-Newton? \fej 
+
+\bej Calcular analíticamente $J(\theta)$ para el problema \eqref{cuadminnl} e implementar el algoritmo de Gauss-Newton, resolviendo \eqref{sistema} a través de la descomposición QR de $J$. (Usar el comando \verb+qr+ de Matlab). \fej
+
+
+
+Para probar todos los algoritmos implementados, en la página de la materia está disponible el archivo \verb+datos.mat+. Al cargar \verb+datos.dat+ en Matlab se generan varias matrices de nombre: \verb+datos_i+. Cada una de estas matrices de $n_i\times 2$ corresponde a un ejemplo y contiene en su primera columna los valores de ${\bf x}$ y en la segunda los valores de ${\bf y}$.
+
+
+
+
+\begin{thebibliography}{9}
+  \bibitem{Kutner}
+  M. H. Kutner, C. J. Nachtsheim, J. Neter, W. Li, 
+  \emph{Applied Linear Statistical Models},
+  {McGraw-Hill international edition},
+  5th edition 
+  (2005).
+  
+\end{thebibliography}
+
+
+
+
+ 
+ \end{document}
+
+ 
+ 
