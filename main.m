@@ -3,7 +3,7 @@ clear all, close all
 
 %Ingreso y procesamiento inicial de datos
 load('datosTP1-2017.mat')
-datosInp = M; %Ingresar datos de entrada. Primer columna variable independiente.
+datosInp = datos2; %Ingresar datos de entrada. Primer columna variable independiente.
 X = datosInp(:,1);
 Y = datosInp(:,2);
 
@@ -110,12 +110,12 @@ y1bis = tita_ej1b(2).*exp(tita_ej1b(1).*x1); %Estimacion ejercicio 1 bis
 plot(x1,y1bis,'Linewidth',3)
 y2 = tita_ej2(2).*exp(tita_ej2(1).*x1)+tita_ej2(3); %Estimacion ejercicio 2
 plot(x1,y2,'Linewidth',3)
-legend('Datos', 'Regresión exponencial por linealizacion', 'Regresion exponencial Gauss-Newton','Regresion exponencial generalizada')
+legend('Datos', 'Regresion exponencial por linealizacion', 'Regresion exponencial Gauss-Newton','Regresion exponencial generalizada')
 
 if errr1 <= err1 && errr1 <= er
     text(.5,.1,{['Error Ej 1= ',num2str(er)],['Error Ej 1bis= ',num2str(err1)],['\color{red}','Error Ej 2= ',num2str(errr1)]},'Units','normalized')
 elseif err1 <= errr1 && err1 <= er
-    text(.5,.1,{['Error Ej 1= ',num2str(er)],['\color{red}','Error Ej 1bis= ',num2str(err1)],['Error Ej 2= ',num2str(errr1)]},'Units','normalized')
+    text(.5,.1,{['Error Ej 1= ',num2str(er)],['\color{red}','Error Ej 1bis= ',num2str(err1)],['\color{black}''Error Ej 2= ',num2str(errr1)]},'Units','normalized')
 elseif er <= err1 && er <= errr1
-    text(.5,.1,{['\color{red}','Error Ej 1= ',num2str(er)],['Error Ej 1bis= ',num2str(err1)],['Error Ej 2= ',num2str(errr1)]},'Units','normalized')
+    text(.5,.1,{['\color{red}','Error Ej 1= ',num2str(er)],['\color{black}''Error Ej 1bis= ',num2str(err1)],['Error Ej 2= ',num2str(errr1)]},'Units','normalized')
 end
